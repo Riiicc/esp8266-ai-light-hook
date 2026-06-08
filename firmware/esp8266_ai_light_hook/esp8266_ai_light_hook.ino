@@ -9,6 +9,8 @@ constexpr char kSsid[] = "TP-LINK_2.4bbt";
 constexpr char kPassword[] = "123584679";
 constexpr uint16_t kPort = 8899;
 constexpr uint32_t kClientIdleTimeoutMs = 1500U;
+constexpr uint8_t kWifiConnectedBlinkCount = 5U;
+constexpr uint16_t kWifiConnectedBlinkStepMs = 150U;
 
 constexpr uint8_t kRedPin = D1;
 constexpr uint8_t kYellowPin = D2;
@@ -33,6 +35,15 @@ void writePins(const LightOutput &output) {
 
 void updateLights() {
   writePins(lightController.render(millis()));
+}
+
+void blinkAllLights(uint8_t blinkCount, uint16_t stepMs) {
+  for (uint8_t i = 0; i < blinkCount; ++i) {
+    writePins({true, true, true});
+    delay(stepMs);
+    writePins({false, false, false});
+    delay(stepMs);
+  }
 }
 
 void logIpAddress() {
@@ -66,6 +77,7 @@ void connectWifi() {
 
   Serial.print("WiFi connected, IP: ");
   logIpAddress();
+  blinkAllLights(kWifiConnectedBlinkCount, kWifiConnectedBlinkStepMs);
 }
 
 void closeActiveClient(const char *reason) {
