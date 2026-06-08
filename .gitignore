@@ -1,0 +1,30 @@
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editor / IDE
+.vscode/
+.idea/
+*.code-workspace
+
+# Documentation
+docs/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Local test/build outputs
+*.exe
+*.out
+*.obj
+*.o
+*.log
+
+# Arduino / temporary artifacts
+*.tmp
+*.bak
