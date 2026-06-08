@@ -24,7 +24,7 @@ The current example hook mapping in this repo is:
 
 That gives you:
 
-- `E`: yellow flashing for standby
+- `E`: fixed red-yellow-green alternating for standby
 - `Q`: red-yellow-green alternating for active work
 - `G`: red solid for approval needed
 - `A`: green solid for round complete
@@ -56,7 +56,7 @@ Accelerating flashing and alternating schemes use this rule:
 
 - Initial step interval: `300ms`
 - Speed-up: every `1` second, reduce by `1ms`
-- Floor: `30ms`
+- Floor: `100ms`
 
 Fixed slow flashing schemes use:
 
@@ -75,7 +75,7 @@ Fixed slow flashing schemes use:
 
 - `B`: green accelerating flash
 - `C`: green slow flash
-- `E`: yellow accelerating flash
+- `E`: fixed red-yellow-green alternating, `500ms` per step, no acceleration
 - `F`: yellow slow flash
 - `H`: red accelerating flash
 - `I`: red slow flash

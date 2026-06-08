@@ -3,9 +3,10 @@
 namespace {
 
 constexpr uint32_t kFlashingStepInitialMs = 300U;
-constexpr uint32_t kFlashingStepFloorMs = 30U;
+constexpr uint32_t kFlashingStepFloorMs = 100U;
 constexpr uint32_t kFlashingStepSpeedupIntervalMs = 1000U;
 constexpr uint32_t kSlowBlinkStepMs = 500U;
+constexpr uint32_t kFixedThreeColorStepMs = 500U;
 
 LightOutput offOutput() { return {false, false, false}; }
 
@@ -63,8 +64,8 @@ LightOutput LightController::render(uint32_t nowMs) const {
       return {false, true, false};
     case LightMode::YellowBlinkSlow:
       return {false, blinkPhase(elapsedMs, kSlowBlinkStepMs * 2U), false};
-    case LightMode::YellowBlink:
-      return {false, blinkPhase(elapsedMs, flashingStep * 2U), false};
+    case LightMode::RedYellowGreenAltFixed:
+      return sequenceOutput(elapsedMs, kFixedThreeColorStepMs, "RYG", 3U);
     case LightMode::RedSolid:
       return {true, false, false};
     case LightMode::RedBlinkSlow:
@@ -115,7 +116,7 @@ bool applyCommand(LightController &controller, char command, uint32_t nowMs) {
       controller.setMode(LightMode::YellowSolid, nowMs);
       return true;
     case 'E':
-      controller.setMode(LightMode::YellowBlink, nowMs);
+      controller.setMode(LightMode::RedYellowGreenAltFixed, nowMs);
       return true;
     case 'F':
       controller.setMode(LightMode::YellowBlinkSlow, nowMs);

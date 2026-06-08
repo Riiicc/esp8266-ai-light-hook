@@ -23,7 +23,7 @@ void test_known_commands_map_to_modes() {
   expect(controller.mode() == LightMode::GreenBlinkSlow, "C should select green slow blink");
 
   expect(applyCommand(controller, 'E', 0U), "E should be accepted");
-  expect(controller.mode() == LightMode::YellowBlink, "E should select yellow blink");
+  expect(controller.mode() == LightMode::RedYellowGreenAltFixed, "E should select fixed three-color alternate");
 
   expect(applyCommand(controller, 'F', 0U), "F should be accepted");
   expect(controller.mode() == LightMode::YellowBlinkSlow, "F should select yellow slow blink");

@@ -9,7 +9,7 @@ class LightMode(Enum):
     GREEN_BLINK = auto()
     YELLOW_SOLID = auto()
     YELLOW_BLINK_SLOW = auto()
-    YELLOW_BLINK = auto()
+    RED_YELLOW_GREEN_ALT_FIXED = auto()
     RED_SOLID = auto()
     RED_BLINK_SLOW = auto()
     RED_BLINK = auto()
@@ -31,8 +31,9 @@ class LightOutput:
 
 
 FLASHING_STEP_INITIAL_MS = 300
-FLASHING_STEP_FLOOR_MS = 30
+FLASHING_STEP_FLOOR_MS = 100
 FLASHING_STEP_SPEEDUP_INTERVAL_MS = 1000
+FIXED_THREE_COLOR_STEP_MS = 500
 
 
 class LightController:
@@ -63,8 +64,8 @@ class LightController:
             return LightOutput(False, True, False)
         if self._mode is LightMode.YELLOW_BLINK_SLOW:
             return LightOutput(False, _blink_phase(elapsed_ms, 1000), False)
-        if self._mode is LightMode.YELLOW_BLINK:
-            return LightOutput(False, _blink_phase(elapsed_ms, flashing_step * 2), False)
+        if self._mode is LightMode.RED_YELLOW_GREEN_ALT_FIXED:
+            return _sequence_output(elapsed_ms, FIXED_THREE_COLOR_STEP_MS, ["R", "Y", "G"])
         if self._mode is LightMode.RED_SOLID:
             return LightOutput(True, False, False)
         if self._mode is LightMode.RED_BLINK_SLOW:
@@ -118,7 +119,7 @@ def apply_command(controller: LightController, command: str) -> bool:
         "B": LightMode.GREEN_BLINK,
         "D": LightMode.YELLOW_SOLID,
         "F": LightMode.YELLOW_BLINK_SLOW,
-        "E": LightMode.YELLOW_BLINK,
+        "E": LightMode.RED_YELLOW_GREEN_ALT_FIXED,
         "G": LightMode.RED_SOLID,
         "I": LightMode.RED_BLINK_SLOW,
         "H": LightMode.RED_BLINK,
@@ -151,7 +152,7 @@ def test_all_known_commands_map_to_modes() -> None:
         "B": LightMode.GREEN_BLINK,
         "D": LightMode.YELLOW_SOLID,
         "F": LightMode.YELLOW_BLINK_SLOW,
-        "E": LightMode.YELLOW_BLINK,
+        "E": LightMode.RED_YELLOW_GREEN_ALT_FIXED,
         "G": LightMode.RED_SOLID,
         "I": LightMode.RED_BLINK_SLOW,
         "H": LightMode.RED_BLINK,
@@ -200,15 +201,19 @@ def test_render_patterns() -> None:
     green_solid.set_mode(LightMode.GREEN_SOLID)
     expect(green_solid.render(42) == LightOutput(False, False, True), "A should be green solid")
 
-    yellow_blink = LightController()
-    yellow_blink.set_mode(LightMode.YELLOW_BLINK, now_ms=0)
+    fixed_three_color = LightController()
+    fixed_three_color.set_mode(LightMode.RED_YELLOW_GREEN_ALT_FIXED, now_ms=0)
     expect(
-        yellow_blink.render(0) == LightOutput(False, True, False),
-        "E should start with yellow on",
+        fixed_three_color.render(0) == LightOutput(True, False, False),
+        "E should start with red",
     )
     expect(
-        yellow_blink.render(300) == LightOutput(False, False, False),
-        "E should turn yellow off after the initial step",
+        fixed_three_color.render(500) == LightOutput(False, True, False),
+        "E should move to yellow at 500 ms",
+    )
+    expect(
+        fixed_three_color.render(1000) == LightOutput(False, False, True),
+        "E should move to green at 1000 ms",
     )
 
     yellow_blink_slow = LightController()
@@ -296,8 +301,8 @@ def test_render_patterns() -> None:
     floor_blink = LightController()
     floor_blink.set_mode(LightMode.GREEN_BLINK, now_ms=0)
     expect(
-        floor_blink.render(270000 + 30) == LightOutput(False, False, False),
-        "flashing schemes should stop accelerating at the 30 ms floor",
+        floor_blink.render(200000 + 100) == LightOutput(False, False, False),
+        "flashing schemes should stop accelerating at the 100 ms floor",
     )
 
 

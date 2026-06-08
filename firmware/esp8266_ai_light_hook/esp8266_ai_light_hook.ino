@@ -65,7 +65,7 @@ void connectWifi() {
   }
 
   WiFi.begin(kSsid, kPassword);
-  lightController.setMode(LightMode::YellowBlink, millis());
+  lightController.setMode(LightMode::RedYellowGreenAltFixed, millis());
 
   Serial.print("Connecting to WiFi: ");
   Serial.println(kSsid);
@@ -150,7 +150,7 @@ void setup() {
   Serial.println();
   Serial.println("Booting ESP8266 AI Light Hook");
 
-  lightController.setMode(LightMode::YellowBlink, millis());
+  lightController.setMode(LightMode::RedYellowGreenAltFixed, millis());
   updateLights();
 
   connectWifi();
@@ -160,7 +160,7 @@ void setup() {
   Serial.print("TCP server listening on port ");
   Serial.println(kPort);
 
-  lightController.setMode(LightMode::YellowBlink, millis());
+  lightController.setMode(LightMode::RedYellowGreenAltFixed, millis());
 }
 
 void loop() {

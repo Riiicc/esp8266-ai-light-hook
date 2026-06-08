@@ -9,7 +9,7 @@ enum class LightMode {
   GreenBlink,
   YellowSolid,
   YellowBlinkSlow,
-  YellowBlink,
+  RedYellowGreenAltFixed,
   RedSolid,
   RedBlinkSlow,
   RedBlink,
